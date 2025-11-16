@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#f8f9fa">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Заголовок -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvWelcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Мария Иванова"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Менеджер производства"
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выйти"
+                android:backgroundTint="#F44336"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <!-- Статистика заказов -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="СТАТИСТИКА ЗАКАЗОВ"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvTotalOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Всего заказов: 24"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvCompletedOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Выполнено: 18"
+                android:textSize="14sp"
+                android:textColor="#4CAF50"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvInProgressOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="В работе: 6"
+                android:textSize="14sp"
+                android:textColor="#FF9800"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvCompletionPercent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Выполнение: 75%"
+                android:textSize="14sp"
+                android:textColor="#2196F3"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Производительность бригад -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ПРОИЗВОДИТЕЛЬНОСТЬ БРИГАД"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvBrigadePerformance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Бригада №1: 89%\nБригада №2: 76%\nБригада №3: 92%\nБригада №4: 81%"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+        <!-- Управление -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="УПРАВЛЕНИЕ ПРОИЗВОДСТВОМ"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="УПРАВЛЕНИЕ ЗАКАЗАМИ"
+                android:textSize="14sp"
+                android:backgroundTint="#2196F3"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnProductionPlan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ПЛАН ПРОИЗВОДСТВА"
+                android:textSize="14sp"
+                android:backgroundTint="#4CAF50"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnReports"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ОТЧЕТЫ И АНАЛИТИКА"
+                android:textSize="14sp"
+                android:backgroundTint="#FF9800"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnPersonnel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="УПРАВЛЕНИЕ ПЕРСОНАЛОМ"
+                android:textSize="14sp"
+                android:backgroundTint="#9C27B0"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

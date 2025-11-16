@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Моя Смена</string>
+    <string name="app_logo">Логотип приложения</string>
+    <string name="username_hint">Имя пользователя</string>
+    <string name="password_hint">Пароль</string>
+    <string name="login_button">ВОЙТИ</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="or_register">или</string>
+    <string name="register_button">ЗАРЕГИСТРИРОВАТЬСЯ</string>
+    <string name="email_hint">Email</string>
+    <string name="confirm_password_hint">Подтвердите пароль</string>
+    <string name="reset_password_button">СБРОСИТЬ ПАРОЛЬ</string>
+    <string name="back">Назад</string>
+</resources>

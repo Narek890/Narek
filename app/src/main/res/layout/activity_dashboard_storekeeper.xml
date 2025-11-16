@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#f8f9fa">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Заголовок -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvWelcome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Петр Козлов"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Кладовщик"
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выйти"
+                android:backgroundTint="#F44336"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <!-- Материалы с низким запасом -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="НИЗКИЙ ЗАПАС"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#F44336"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvMaterial1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Нитки #40: 2.5 катушка (мин: 5.0)"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvMaterial2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Пуговицы: 45.0 шт (мин: 100.0)"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvMaterial3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Молния: 8.0 шт (мин: 15.0)"
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+        </LinearLayout>
+
+        <!-- Последние списания -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ПОСЛЕДНИЕ СПИСАНИЯ"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvRecentUsage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ткань х/б - 45.2 м\nНитки #40 - 3 кат.\nПуговицы - 120 шт\nМолния - 8 шт"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+        <!-- Быстрые действия -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:elevation="2dp"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="СКЛАД"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnInventory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ИНВЕНТАРИЗАЦИЯ"
+                android:textSize="14sp"
+                android:backgroundTint="#2196F3"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnReceiveMaterials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ПРИНЯТЬ МАТЕРИАЛЫ"
+                android:textSize="14sp"
+                android:backgroundTint="#4CAF50"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnIssueMaterials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ВЫДАТЬ МАТЕРИАЛЫ"
+                android:textSize="14sp"
+                android:backgroundTint="#FF9800"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
