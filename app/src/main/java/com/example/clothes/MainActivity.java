@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                User user = databaseHelper.authenticateUser(email, password);
+                // Используем DatabaseHelper.User вместо User
+                DatabaseHelper.User user = databaseHelper.authenticateUser(email, password);
 
                 runOnUiThread(() -> {
                     if (user != null) {
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void loginSuccessful(User user) {
+    private void loginSuccessful(DatabaseHelper.User user) {
         Toast.makeText(this, "Добро пожаловать, " + user.getName() + "!", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, DashboardActivity.class);
@@ -118,4 +119,3 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 }
-

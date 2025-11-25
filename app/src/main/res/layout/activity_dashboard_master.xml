@@ -185,12 +185,22 @@
                 android:layout_marginBottom="12dp" />
 
             <Button
+                android:id="@+id/btnBrigadeStats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="СТАТИСТИКА БРИГАДЫ"
+                android:textSize="14sp"
+                android:backgroundTint="#2196F3"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="8dp" />
+
+            <Button
                 android:id="@+id/btnAssignTasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="НАЗНАЧИТЬ ЗАДАНИЯ"
                 android:textSize="14sp"
-                android:backgroundTint="#2196F3"
+                android:backgroundTint="#4CAF50"
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="8dp" />
 
@@ -200,17 +210,17 @@
                 android:layout_height="wrap_content"
                 android:text="КОНТРОЛЬ КАЧЕСТВА"
                 android:textSize="14sp"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="#FF9800"
                 android:textColor="@android:color/white"
                 android:layout_marginBottom="8dp" />
 
             <Button
-                android:id="@+id/btnBrigadeReport"
+                android:id="@+id/btnWorkSchedule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ОТЧЕТ БРИГАДЫ"
+                android:text="ГРАФИК РАБОТЫ"
                 android:textSize="14sp"
-                android:backgroundTint="#FF9800"
+                android:backgroundTint="#9C27B0"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

@@ -11,4 +11,30 @@
     <string name="confirm_password_hint">Подтвердите пароль</string>
     <string name="reset_password_button">СБРОСИТЬ ПАРОЛЬ</string>
     <string name="back">Назад</string>
+    <string name="quality_control_title">Контроль качества</string>
+    <string name="quality_check_title">Проверка качества</string>
+    <string name="quality_approve">Одобрить</string>
+    <string name="quality_reject">Отклонить</string>
+    <string name="quality_approved_quantity">Одобренное количество</string>
+    <string name="quality_defects_found">Найденный брак</string>
+    <string name="quality_notes">Заметки по качеству</string>
+    <string name="quality_check_success">Качество проверено успешно</string>
+    <string name="quality_check_error">Ошибка проверки качества</string>
+    <string name="quality_bulk_check">Массовая проверка</string>
+    <string name="quality_statistics">Статистика качества</string>
+    <string name="quality_no_tasks">Нет заданий для проверки качества</string>
+    <string name="quality_all_checked">Все задания уже проверены</string>
+
+    <!-- Статусы -->
+    <string name="status_pending">Ожидает проверки</string>
+    <string name="status_checked">Проверено</string>
+    <string name="status_in_progress">В работе</string>
+    <string name="status_completed">Выполнено</string>
+
+    <!-- Сообщения -->
+    <string name="msg_quality_approved">Качество одобрено в %s</string>
+    <string name="msg_quality_rejected">Качество отклонено в %s</string>
+    <string name="msg_bulk_check_complete">Проверено %d/%d заданий</string>
+    <string name="msg_enter_quantity">Введите количество</string>
+    <string name="msg_approved_exceeds">Одобрено не может быть больше выполненного</string>
 </resources>

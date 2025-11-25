@@ -1,6 +1,5 @@
 package com.example.clothes;
 
-
 public class User {
     private int id;
     private String name;
@@ -9,8 +8,6 @@ public class User {
     private String brigade;
     private String position;
     private String avatarUrl;
-
-    public User() {}
 
     public User(int id, String name, String email, String role, String brigade, String position, String avatarUrl) {
         this.id = id;
@@ -22,25 +19,12 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    // Геттеры и сеттеры
+    // Getters
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
     public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
     public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
     public String getBrigade() { return brigade; }
-    public void setBrigade(String brigade) { this.brigade = brigade; }
-
     public String getPosition() { return position; }
-    public void setPosition(String position) { this.position = position; }
-
     public String getAvatarUrl() { return avatarUrl; }
-    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 }

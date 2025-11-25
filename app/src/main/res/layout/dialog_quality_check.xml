@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/dialog_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🔍 Проверка качества работы"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/primary_color"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Карточка с информацией о задании -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/tvTaskDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Операция: Раскрой деталей"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/text_primary"/>
+
+        <TextView
+            android:id="@+id/tvWorkerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="👤 Работник: Иванов И.И."
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/text_secondary"/>
+
+        <TextView
+            android:id="@+id/tvProductInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📦 Изделие: Куртка зимняя"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/text_secondary"/>
+
+        <TextView
+            android:id="@+id/tvProgressInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📊 Выполнено: 50/100 шт"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/text_secondary"/>
+
+        <TextView
+            android:id="@+id/tvDefectsInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="❌ Текущий брак: 2 шт"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"/>
+
+    </LinearLayout>
+
+    <!-- Поля для ввода данных проверки -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="✅ Одобренное количество:"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/text_primary"/>
+
+    <EditText
+        android:id="@+id/etApprovedQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Введите количество"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="❌ Найденный брак:"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/text_primary"/>
+
+    <EditText
+        android:id="@+id/etDefectsFound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Количество брака"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📝 Заметки по качеству:"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/text_primary"/>
+
+    <EditText
+        android:id="@+id/etQualityNotes"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="Введите заметки по качеству..."
+        android:gravity="top"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Кнопки действий -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btnApprove"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="✅ Одобрить"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/button_approve_background"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnReject"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="❌ Отклонить"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/button_reject_background"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</LinearLayout>

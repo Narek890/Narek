@@ -150,9 +150,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         etConfirmPassword.setVisibility(EditText.VISIBLE);
         btnResetPassword.setText("СБРОСИТЬ ПАРОЛЬ");
 
-        // Получаем имя пользователя для персонализации
+        // Получаем имя пользователя для персонализации (используем DatabaseHelper.User)
         new Thread(() -> {
-            User user = databaseHelper.getUserByEmail(userEmail);
+            DatabaseHelper.User user = databaseHelper.getUserByEmail(userEmail);
             if (user != null) {
                 runOnUiThread(() -> {
                     tvStep2.setText("Сброс пароля для " + user.getName());

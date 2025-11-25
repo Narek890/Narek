@@ -118,7 +118,7 @@
 
         </LinearLayout>
 
-        <!-- Сегодня -->
+        <!-- Активные задания -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="СЕГОДНЯ"
+                android:text="АКТИВНЫЕ ЗАДАНИЯ"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#333333"
@@ -141,7 +141,7 @@
                 android:id="@+id/tvOperation1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Операция 1    45/50 шт"
+                android:text="Раскрой деталей    0/50 шт (Назначено)"
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:layout_marginBottom="8dp" />
@@ -150,7 +150,7 @@
                 android:id="@+id/tvOperation2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Операция 2    30/50 шт"
+                android:text="Стачать швы    0/30 шт (Назначено)"
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:layout_marginBottom="8dp" />
@@ -159,9 +159,21 @@
                 android:id="@+id/tvOperation3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Операция 3    52/50 шт"
+                android:text="Обработка краев    15/20 шт (В работе)"
                 android:textSize="14sp"
-                android:textColor="#4CAF50" />
+                android:textColor="#2196F3" />
+
+            <!-- Сообщение когда нет активных заданий -->
+            <TextView
+                android:id="@+id/tvNoActiveTasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🎉 Нет активных заданий! Все работы завершены."
+                android:textSize="14sp"
+                android:textColor="#4CAF50"
+                android:gravity="center"
+                android:padding="8dp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -207,7 +219,7 @@
                 android:id="@+id/btnTodayTasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ЗАДАНИЯ НА СЕГОДНЯ"
+                android:text="ВСЕ ЗАДАНИЯ НА СЕГОДНЯ"
                 android:textSize="14sp"
                 android:backgroundTint="#FF9800"
                 android:textColor="@android:color/white" />
