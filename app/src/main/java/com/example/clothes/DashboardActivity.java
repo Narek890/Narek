@@ -3,6 +3,7 @@ package com.example.clothes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.database.Cursor;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +14,26 @@ import androidx.appcompat.app.AlertDialog;
 import android.os.Handler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import android.widget.LinearLayout;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+import com.example.clothes.DatabaseHelper.WorkerStats;
+import com.example.clothes.DatabaseHelper.WorkerDetailedStats;
+import com.example.clothes.DatabaseHelper.Assignment;
+import com.example.clothes.DatabaseHelper.MasterStats;
+import com.example.clothes.DatabaseHelper.Worker;
+import com.example.clothes.DatabaseHelper.ManagerStats;
+import com.example.clothes.DatabaseHelper.Order;
+import com.example.clothes.DatabaseHelper.Product;
+import com.example.clothes.DatabaseHelper.QualityControlItem;
+import com.example.clothes.DatabaseHelper.QualityStats;
+import com.example.clothes.DatabaseHelper.WorkerQualityStats;
+
 
 // Импорты внутренних классов DatabaseHelper
 import com.example.clothes.DatabaseHelper.WorkerStats;
@@ -37,6 +55,7 @@ public class DashboardActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private int userId;
     private String userRole;
+    private String userName;
     private String userBrigade;
 
     // Общие элементы для всех дашбордов
@@ -127,8 +146,13 @@ public class DashboardActivity extends AppCompatActivity {
                 setupMasterDashboard();
                 break;
             case "storekeeper":
-                setContentView(R.layout.activity_dashboard_storekeeper);
-                setupStorekeeperDashboard();
+                // Перенаправляем на отдельную Activity для кладовщика
+                Intent storekeeperIntent = new Intent(this, DashboardStorekeeper.class);
+                storekeeperIntent.putExtra("user_id", userId);
+                storekeeperIntent.putExtra("user_name", userName);
+                storekeeperIntent.putExtra("user_role", userRole);
+                startActivity(storekeeperIntent);
+                finish();
                 break;
             case "manager":
                 setContentView(R.layout.activity_dashboard_manager);
@@ -1673,69 +1697,10 @@ public class DashboardActivity extends AppCompatActivity {
         }
     }
 
-    // === STOREKEEPER DASHBOARD ===
-    private void setupStorekeeperDashboard() {
-        try {
-            tvWelcome = findViewById(R.id.tvWelcome);
-            tvMaterial1 = findViewById(R.id.tvMaterial1);
-            tvMaterial2 = findViewById(R.id.tvMaterial2);
-            tvMaterial3 = findViewById(R.id.tvMaterial3);
-            tvRecentUsage = findViewById(R.id.tvRecentUsage);
-            btnLogout = findViewById(R.id.btnLogout);
-
-            Intent intent = getIntent();
-            String userName = intent.getStringExtra("user_name");
-
-            if (tvWelcome != null) {
-                tvWelcome.setText(userName);
-            }
-
-            // Загружаем данные из БД
-            new Thread(() -> {
-                try {
-                    StorekeeperStats stats = databaseHelper.getStorekeeperStats();
-                    runOnUiThread(() -> {
-                        try {
-                            // Материалы с низким запасом
-                            if (stats.lowStockMaterials != null) {
-                                if (tvMaterial1 != null && stats.lowStockMaterials.size() > 0) {
-                                    Material m = stats.lowStockMaterials.get(0);
-                                    tvMaterial1.setText(m.name + ": " + m.currentStock + " " + m.unit + " (мин: " + m.minStock + ")");
-                                }
-                                if (tvMaterial2 != null && stats.lowStockMaterials.size() > 1) {
-                                    Material m = stats.lowStockMaterials.get(1);
-                                    tvMaterial2.setText(m.name + ": " + m.currentStock + " " + m.unit + " (мин: " + m.minStock + ")");
-                                }
-                                if (tvMaterial3 != null && stats.lowStockMaterials.size() > 2) {
-                                    Material m = stats.lowStockMaterials.get(2);
-                                    tvMaterial3.setText(m.name + ": " + m.currentStock + " " + m.unit + " (мин: " + m.minStock + ")");
-                                }
-                            }
-
-                            if (tvRecentUsage != null) {
-                                tvRecentUsage.setText(stats.recentUsage);
-                            }
-                        } catch (Exception e) {
-                            Log.e("DashboardActivity", "Ошибка обновления UI кладовщика: " + e.getMessage());
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("DashboardActivity", "Ошибка загрузки данных кладовщика: " + e.getMessage());
-                }
-            }).start();
-
-            if (btnLogout != null) {
-                btnLogout.setOnClickListener(v -> logout());
-            }
-        } catch (Exception e) {
-            Log.e("DashboardActivity", "Ошибка инициализации кладовщика: " + e.getMessage());
-            Toast.makeText(this, "Ошибка загрузки интерфейса кладовщика", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     // === MANAGER DASHBOARD ===
     private void setupManagerDashboard() {
         try {
+            // Инициализация элементов интерфейса
             tvWelcome = findViewById(R.id.tvWelcome);
             tvTotalOrders = findViewById(R.id.tvTotalOrders);
             tvCompletedOrders = findViewById(R.id.tvCompletedOrders);
@@ -1744,50 +1709,747 @@ public class DashboardActivity extends AppCompatActivity {
             tvBrigadePerformance = findViewById(R.id.tvBrigadePerformance);
             btnLogout = findViewById(R.id.btnLogout);
 
+            // Получаем имя пользователя
             Intent intent = getIntent();
             String userName = intent.getStringExtra("user_name");
+            userName = intent.getStringExtra("user_name");
+            userId = intent.getIntExtra("user_id", -1);
 
             if (tvWelcome != null) {
-                tvWelcome.setText(userName);
+                tvWelcome.setText(userName != null ? userName : "Менеджер");
             }
 
-            // Загружаем данные из БД
-            new Thread(() -> {
-                try {
-                    ManagerStats stats = databaseHelper.getManagerStats();
-                    runOnUiThread(() -> {
-                        try {
-                            if (tvTotalOrders != null) {
-                                tvTotalOrders.setText("Всего заказов: " + stats.totalOrders);
-                            }
-                            if (tvCompletedOrders != null) {
-                                tvCompletedOrders.setText("Выполнено: " + stats.completedOrders);
-                            }
-                            if (tvInProgressOrders != null) {
-                                tvInProgressOrders.setText("В работе: " + stats.inProgressOrders);
-                            }
-                            if (tvCompletionPercent != null) {
-                                tvCompletionPercent.setText("Выполнение: " + stats.getCompletionPercent() + "%");
-                            }
-                            if (tvBrigadePerformance != null) {
-                                tvBrigadePerformance.setText(stats.brigadePerformance);
-                            }
-                        } catch (Exception e) {
-                            Log.e("DashboardActivity", "Ошибка обновления UI менеджера: " + e.getMessage());
-                        }
-                    });
-                } catch (Exception e) {
-                    Log.e("DashboardActivity", "Ошибка загрузки данных менеджера: " + e.getMessage());
-                }
-            }).start();
+            // Инициализация кнопок управления
+            Button btnOrders = findViewById(R.id.btnOrders);
+            Button btnProductionPlan = findViewById(R.id.btnProductionPlan);
+            Button btnAnalytics = findViewById(R.id.btnAnalytics);
+            Button btnPersonnel = findViewById(R.id.btnPersonnel);
+
+            // Назначение обработчиков кнопок
+            if (btnOrders != null) {
+                btnOrders.setOnClickListener(v -> showOrdersManagement());
+            }
+
+            if (btnProductionPlan != null) {
+                btnProductionPlan.setOnClickListener(v -> showProductionPlan());
+            }
+
+            if (btnAnalytics != null) {
+                btnAnalytics.setOnClickListener(v -> showAnalyticsDashboard());
+            }
+
+            if (btnPersonnel != null) {
+                btnPersonnel.setOnClickListener(v -> showPersonnelManagement());
+            }
 
             if (btnLogout != null) {
                 btnLogout.setOnClickListener(v -> logout());
             }
+
+            // Загружаем данные из БД
+            loadManagerData();
+
+            // Автообновление данных каждые 30 секунд
+            startAutoRefresh();
+
         } catch (Exception e) {
             Log.e("DashboardActivity", "Ошибка инициализации менеджера: " + e.getMessage());
             Toast.makeText(this, "Ошибка загрузки интерфейса менеджера", Toast.LENGTH_SHORT).show();
         }
+    }
+    private void startAutoRefresh() {
+        // Автообновление данных каждые 30 секунд только для менеджера
+        if ("manager".equals(userRole)) {
+            new Handler().postDelayed(() -> {
+                if (!isFinishing() && "manager".equals(userRole)) {
+                    loadManagerData();
+                    startAutoRefresh(); // Рекурсивно вызываем для следующего обновления
+                }
+            }, 30000); // 30 секунд
+        }
+    }
+    private void loadManagerData() {
+        if (databaseHelper == null) {
+            databaseHelper = new DatabaseHelper(this);
+        }
+
+        new Thread(() -> {
+            try {
+                ManagerStats stats = databaseHelper.getManagerStats();
+                runOnUiThread(() -> {
+                    try {
+                        updateManagerUI(stats);
+                    } catch (Exception e) {
+                        Log.e("DashboardActivity", "Ошибка обновления UI менеджера: " + e.getMessage());
+                        showDefaultManagerData();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка загрузки данных менеджера: " + e.getMessage());
+                runOnUiThread(this::showDefaultManagerData);
+            }
+        }).start();
+    }
+
+    private void updateManagerUI(ManagerStats stats) {
+        if (stats == null) {
+            showDefaultManagerData();
+            return;
+        }
+
+        if (tvTotalOrders != null) {
+            tvTotalOrders.setText("Всего заказов: " + stats.totalOrders);
+        }
+        if (tvCompletedOrders != null) {
+            tvCompletedOrders.setText("Выполнено: " + stats.completedOrders);
+        }
+        if (tvInProgressOrders != null) {
+            tvInProgressOrders.setText("В работе: " + stats.inProgressOrders);
+        }
+        if (tvCompletionPercent != null) {
+            int percent = (stats.totalOrders > 0) ? (stats.completedOrders * 100) / stats.totalOrders : 0;
+            tvCompletionPercent.setText("Выполнение: " + percent + "%");
+        }
+        if (tvBrigadePerformance != null) {
+            tvBrigadePerformance.setText(stats.brigadePerformance);
+        }
+    }
+
+    private void showDefaultManagerData() {
+        if (tvTotalOrders != null) tvTotalOrders.setText("Всего заказов: 0");
+        if (tvCompletedOrders != null) tvCompletedOrders.setText("Выполнено: 0");
+        if (tvInProgressOrders != null) tvInProgressOrders.setText("В работе: 0");
+        if (tvCompletionPercent != null) tvCompletionPercent.setText("Выполнение: 0%");
+        if (tvBrigadePerformance != null) tvBrigadePerformance.setText("Нет данных");
+    }
+
+// === МЕТОДЫ ДЛЯ КНОПОК МЕНЕДЖЕРА (упрощенная версия) ===
+
+    // 1. Управление заказами
+    private void showOrdersManagement() {
+        new Thread(() -> {
+            try {
+                List<Order> orders = databaseHelper.getActiveOrders();
+                StringBuilder ordersList = new StringBuilder();
+                ordersList.append("📋 АКТИВНЫЕ ЗАКАЗЫ:\n\n");
+
+                for (Order order : orders) {
+                    Product product = databaseHelper.getProductById(order.productId);
+                    String productName = (product != null) ? product.name : "Неизвестный продукт";
+
+                    ordersList.append("№").append(order.orderNumber)
+                            .append(" - ").append(order.customerName).append("\n")
+                            .append("Продукт: ").append(productName)
+                            .append(" - ").append(order.quantity).append(" шт\n")
+                            .append("Статус: ").append(getOrderStatusText(order.status)).append("\n\n");
+                }
+
+                if (orders.isEmpty()) {
+                    ordersList.append("Нет активных заказов\n\n");
+                }
+
+                final String finalText = ordersList.toString();
+
+                runOnUiThread(() -> {
+                    AlertDialog dialog = new AlertDialog.Builder(this)
+                            .setTitle("Управление заказами")
+                            .setMessage(finalText)
+                            .setPositiveButton("Добавить заказ", (d, which) -> showAddOrderDialog())
+                            .setNeutralButton("Обновить", (d, which) -> showOrdersManagement())
+                            .setNegativeButton("Закрыть", null)
+                            .create();
+
+                    // Если есть заказы, добавляем кнопку управления статусом
+                    if (!orders.isEmpty()) {
+                        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Управление статусом", (d, which) -> {
+                            // Ничего не делаем здесь, обрабатываем в showOrderStatusManagement()
+                            showOrderStatusManagement();
+                        });
+                    }
+
+                    dialog.show();
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка управления заказами: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка загрузки заказов", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private void showAddOrderDialog() {
+        // Генерируем автоматический номер заказа
+        String orderNumber = generateOrderNumber();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("➕ Добавить новый заказ");
+
+        // Создаем динамический View
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 30, 50, 30);
+
+        // Автоматический номер заказа
+        TextView tvOrderNumber = new TextView(this);
+        tvOrderNumber.setText("Номер заказа: " + orderNumber);
+        tvOrderNumber.setTextSize(16);
+        tvOrderNumber.setTypeface(null, Typeface.BOLD);
+        tvOrderNumber.setTextColor(Color.BLUE);
+
+        // Клиент
+        TextView tvCustomer = new TextView(this);
+        tvCustomer.setText("Клиент:");
+        EditText etCustomer = new EditText(this);
+        etCustomer.setHint("Имя клиента");
+
+        // Продукт (вводим вручную)
+        TextView tvProduct = new TextView(this);
+        tvProduct.setText("Продукт:");
+        EditText etProduct = new EditText(this);
+        etProduct.setHint("Название продукта");
+
+        // Количество
+        TextView tvQuantity = new TextView(this);
+        tvQuantity.setText("Количество (шт):");
+        EditText etQuantity = new EditText(this);
+        etQuantity.setHint("100");
+        etQuantity.setInputType(android.text.InputType.TYPE_CLASS_NUMBER);
+
+        // Срок
+        TextView tvDeadline = new TextView(this);
+        tvDeadline.setText("Срок (дд.мм.гггг):");
+        EditText etDeadline = new EditText(this);
+        etDeadline.setHint("01.01.2024");
+
+        // Добавляем все поля в layout
+        layout.addView(tvOrderNumber);
+        layout.addView(tvCustomer);
+        layout.addView(etCustomer);
+        layout.addView(tvProduct);
+        layout.addView(etProduct);
+        layout.addView(tvQuantity);
+        layout.addView(etQuantity);
+        layout.addView(tvDeadline);
+        layout.addView(etDeadline);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Создать", (dialog, which) -> {
+            String customer = etCustomer.getText().toString().trim();
+            String product = etProduct.getText().toString().trim();
+            String quantityStr = etQuantity.getText().toString().trim();
+            String deadline = etDeadline.getText().toString().trim();
+
+            if (customer.isEmpty() || product.isEmpty() || quantityStr.isEmpty()) {
+                Toast.makeText(this, "Заполните все обязательные поля", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                int quantity = Integer.parseInt(quantityStr);
+                if (quantity <= 0) {
+                    Toast.makeText(this, "Количество должно быть больше 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Создаем заказ
+                createNewOrder(orderNumber, customer, product, quantity, deadline);
+
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Введите корректное количество", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Отмена", null);
+        builder.show();
+    }
+
+    private String generateOrderNumber() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        String date = sdf.format(new Date());
+        return "ORD-" + date + "-" + (int)(Math.random() * 1000);
+    }
+
+    private void createNewOrder(String orderNumber, String customerName, String productName, int quantity, String deadline) {
+        new Thread(() -> {
+            try {
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+                // Сначала добавляем продукт, если его нет
+                ContentValues productValues = new ContentValues();
+                productValues.put("name", productName);
+                productValues.put("article", "ART-" + productName.hashCode());
+
+                long productId = db.insertWithOnConflict("products", null, productValues,
+                        SQLiteDatabase.CONFLICT_IGNORE);
+
+                if (productId == -1) {
+                    // Продукт уже существует, получаем его ID
+                    Cursor cursor = db.rawQuery("SELECT id FROM products WHERE name = ?",
+                            new String[]{productName});
+                    if (cursor.moveToFirst()) {
+                        productId = cursor.getLong(0);
+                    }
+                    cursor.close();
+                }
+
+                // Создаем заказ
+                ContentValues orderValues = new ContentValues();
+                orderValues.put("order_number", orderNumber);
+                orderValues.put("customer_name", customerName);
+                orderValues.put("product_id", productId);
+                orderValues.put("quantity", quantity);
+                orderValues.put("status", "new");
+                orderValues.put("created_at", getCurrentDateTime());
+
+                if (!deadline.isEmpty()) {
+                    orderValues.put("deadline", deadline);
+                }
+
+                long result = db.insert("orders", null, orderValues);
+
+                runOnUiThread(() -> {
+                    if (result != -1) {
+                        Toast.makeText(this, "✅ Заказ " + orderNumber + " успешно создан", Toast.LENGTH_SHORT).show();
+                        loadManagerData(); // Обновляем статистику
+                        showOrdersManagement(); // Показываем обновленный список
+                    } else {
+                        Toast.makeText(this, "❌ Ошибка создания заказа", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка создания заказа: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка создания заказа", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private void showOrderStatusManagement() {
+        new Thread(() -> {
+            try {
+                List<Order> orders = databaseHelper.getActiveOrders();
+
+                if (orders.isEmpty()) {
+                    runOnUiThread(() -> Toast.makeText(this, "Нет активных заказов", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
+                String[] orderItems = new String[orders.size()];
+                for (int i = 0; i < orders.size(); i++) {
+                    Order order = orders.get(i);
+                    Product product = databaseHelper.getProductById(order.productId);
+                    String productName = (product != null) ? product.name : "Неизвестный продукт";
+                    orderItems[i] = "№" + order.orderNumber + " - " + productName +
+                            " (" + getOrderStatusText(order.status) + ")";
+                }
+
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Изменение статуса заказа")
+                            .setItems(orderItems, (dialog, which) -> {
+                                Order selectedOrder = orders.get(which);
+                                showStatusOptionsForOrder(selectedOrder);
+                            })
+                            .setNegativeButton("Отмена", null)
+                            .show();
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка управления статусами: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка загрузки заказов", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private void showStatusOptionsForOrder(Order order) {
+        new AlertDialog.Builder(this)
+                .setTitle("Статус заказа №" + order.orderNumber)
+                .setMessage("Текущий статус: " + getOrderStatusText(order.status) +
+                        "\nВыберите новый статус:")
+                .setPositiveButton("В работу", (dialog, which) -> {
+                    updateOrderStatus(order.id, "in_progress");
+                })
+                .setNeutralButton("Завершить", (dialog, which) -> {
+                    updateOrderStatus(order.id, "completed");
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+    // Добавьте этот метод в класс DashboardActivity после других методов менеджера
+
+    private void updateOrderStatus(int orderId, String status) {
+        new Thread(() -> {
+            try {
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("status", status);
+                values.put("updated_at", getCurrentDateTime());
+
+                if ("completed".equals(status)) {
+                    values.put("completed_at", getCurrentDateTime());
+                }
+
+                int rows = db.update("orders", values, "id = ?", new String[]{String.valueOf(orderId)});
+
+                runOnUiThread(() -> {
+                    if (rows > 0) {
+                        Toast.makeText(this, "✅ Статус заказа обновлен", Toast.LENGTH_SHORT).show();
+                        loadManagerData(); // Обновляем статистику
+                    } else {
+                        Toast.makeText(this, "❌ Ошибка обновления статуса", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка обновления статуса заказа: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка обновления статуса", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    // 2. План производства (упрощенный)
+    private void showProductionPlan() {
+        new Thread(() -> {
+            try {
+                List<Order> orders = databaseHelper.getActiveOrders();
+                StringBuilder plan = new StringBuilder();
+                plan.append("📅 ПЛАН ПРОИЗВОДСТВА\n\n");
+
+                int totalQuantity = 0;
+                int inProgressOrders = 0;
+                int newOrders = 0;
+
+                for (Order order : orders) {
+                    Product product = databaseHelper.getProductById(order.productId);
+                    if (product != null) {
+                        plan.append("• ").append(product.name)
+                                .append(" (№").append(order.orderNumber).append(")")
+                                .append(" - ").append(order.quantity).append(" шт")
+                                .append(" [").append(getOrderStatusText(order.status)).append("]\n");
+                        totalQuantity += order.quantity;
+
+                        if ("in_progress".equals(order.status)) {
+                            inProgressOrders++;
+                        } else if ("new".equals(order.status)) {
+                            newOrders++;
+                        }
+                    }
+                }
+
+                plan.append("\n📊 СТАТИСТИКА:\n");
+                plan.append("• Всего заказов: ").append(orders.size()).append("\n");
+                plan.append("• Новые: ").append(newOrders).append("\n");
+                plan.append("• В работе: ").append(inProgressOrders).append("\n");
+                plan.append("• Общее количество: ").append(totalQuantity).append(" шт\n");
+
+                if (orders.size() > 0) {
+                    int avgPerOrder = totalQuantity / orders.size();
+                    plan.append("• Средний заказ: ").append(avgPerOrder).append(" шт\n");
+                }
+
+                final String finalPlan = plan.toString();
+
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle("План производства")
+                            .setMessage(finalPlan)
+                            .setPositiveButton("Обновить", (dialog, which) -> showProductionPlan())
+                            .setNegativeButton("Закрыть", null)
+                            .show();
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка плана производства: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка загрузки плана", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    // 3. Аналитика (упрощенная)
+    private void showAnalyticsDashboard() {
+        new Thread(() -> {
+            try {
+                QualityStats qualityStats = databaseHelper.getQualityStats();
+                ManagerStats managerStats = databaseHelper.getManagerStats();
+
+                StringBuilder analytics = new StringBuilder();
+                analytics.append("📊 АНАЛИТИКА ПРОИЗВОДСТВА\n\n");
+
+                analytics.append("🎯 ЗАКАЗЫ:\n");
+                analytics.append("• Всего: ").append(managerStats.totalOrders).append("\n");
+                analytics.append("• Выполнено: ").append(managerStats.completedOrders).append("\n");
+                analytics.append("• В работе: ").append(managerStats.inProgressOrders).append("\n");
+                analytics.append("• Выполнение: ").append(managerStats.getCompletionPercent()).append("%\n\n");
+
+                analytics.append("✅ КАЧЕСТВО:\n");
+                analytics.append("• Проверено: ").append(qualityStats.checkedAssignments)
+                        .append("/").append(qualityStats.totalAssignments).append("\n");
+                analytics.append("• Качество: ").append(String.format("%.1f", 100 - qualityStats.getDefectPercentage()))
+                        .append("%\n");
+                analytics.append("• Брак: ").append(qualityStats.totalDefects).append(" шт (")
+                        .append(String.format("%.1f", qualityStats.getDefectPercentage())).append("%)\n\n");
+
+                analytics.append("👥 ПРОИЗВОДИТЕЛЬНОСТЬ БРИГАД:\n");
+                analytics.append(managerStats.brigadePerformance);
+
+                final String finalAnalytics = analytics.toString();
+
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Аналитика")
+                            .setMessage(finalAnalytics)
+                            .setPositiveButton("Обновить", (dialog, which) -> showAnalyticsDashboard())
+                            .setNegativeButton("Закрыть", null)
+                            .show();
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка аналитики: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка загрузки аналитики", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    // 4. Управление персоналом (с возможностью изменения бригады)
+    private void showPersonnelManagement() {
+        new Thread(() -> {
+            try {
+                List<Worker> workers = getAllWorkers();
+
+                if (workers.isEmpty()) {
+                    runOnUiThread(() -> Toast.makeText(this, "Нет сотрудников", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
+                String[] workerItems = new String[workers.size()];
+                for (int i = 0; i < workers.size(); i++) {
+                    Worker worker = workers.get(i);
+                    workerItems[i] = worker.name + " - " + worker.position +
+                            " (" + worker.brigade + ")";
+                }
+
+                runOnUiThread(() -> {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Управление персоналом")
+                            .setItems(workerItems, (dialog, which) -> {
+                                Worker selectedWorker = workers.get(which);
+                                showWorkerManagementDialog(selectedWorker);
+                            })
+                            .setPositiveButton("Добавить сотрудника", (d, which) -> showAddEmployeeDialog())
+                            .setNegativeButton("Закрыть", null)
+                            .show();
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка управления персоналом: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка загрузки персонала", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private List<Worker> getAllWorkers() {
+        List<Worker> workers = new ArrayList<>();
+
+        try {
+            SQLiteDatabase db = databaseHelper.getReadableDatabase();
+            Cursor cursor = db.rawQuery(
+                    "SELECT id, name, email, role, brigade, position FROM users WHERE role IN ('worker', 'master', 'storekeeper') ORDER BY name",
+                    null
+            );
+
+            while (cursor.moveToNext()) {
+                Worker worker = new Worker();
+                worker.id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                worker.name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                worker.email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+                worker.role = cursor.getString(cursor.getColumnIndexOrThrow("role"));
+                worker.brigade = cursor.getString(cursor.getColumnIndexOrThrow("brigade"));
+                worker.position = cursor.getString(cursor.getColumnIndexOrThrow("position"));
+                workers.add(worker);
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.e("DashboardActivity", "Ошибка получения работников: " + e.getMessage());
+        }
+
+        return workers;
+    }
+
+    private void showWorkerManagementDialog(Worker worker) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Управление: " + worker.name);
+
+        // Создаем динамический View
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 30, 50, 30);
+
+        // Информация о работнике
+        TextView tvInfo = new TextView(this);
+        tvInfo.setText("Информация:\n" +
+                "Должность: " + worker.position + "\n" +
+                "Роль: " + getRoleText(worker.role) + "\n" +
+                "Бригада: " + worker.brigade + "\n" +
+                "Email: " + worker.email);
+        tvInfo.setTextSize(14);
+        tvInfo.setLineSpacing(1.2f, 1.2f);
+
+        // Поле для изменения бригады
+        TextView tvChangeBrigade = new TextView(this);
+        tvChangeBrigade.setText("\nИзменить бригаду:");
+        EditText etNewBrigade = new EditText(this);
+        etNewBrigade.setHint(worker.brigade);
+
+        // Добавляем все поля
+        layout.addView(tvInfo);
+        layout.addView(tvChangeBrigade);
+        layout.addView(etNewBrigade);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Сохранить бригаду", (dialog, which) -> {
+            String newBrigade = etNewBrigade.getText().toString().trim();
+            if (!newBrigade.isEmpty() && !newBrigade.equals(worker.brigade)) {
+                updateWorkerBrigade(worker.id, newBrigade);
+            }
+        });
+
+        builder.setNegativeButton("Закрыть", null);
+        builder.show();
+    }
+
+    private void updateWorkerBrigade(int workerId, String newBrigade) {
+        new Thread(() -> {
+            try {
+                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("brigade", newBrigade);
+                values.put("updated_at", getCurrentDateTime());
+
+                int rows = db.update("users", values, "id = ?", new String[]{String.valueOf(workerId)});
+
+                runOnUiThread(() -> {
+                    if (rows > 0) {
+                        Toast.makeText(this, "✅ Бригада успешно изменена", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "❌ Ошибка изменения бригады", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("DashboardActivity", "Ошибка изменения бригады: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Ошибка изменения бригады", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private void showAddEmployeeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("➕ Добавить сотрудника");
+
+        // Создаем динамический View
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 30, 50, 30);
+
+        // Поле для имени
+        TextView tvName = new TextView(this);
+        tvName.setText("ФИО:");
+        EditText etName = new EditText(this);
+        etName.setHint("Иванов Иван Иванович");
+
+        // Поле для email
+        TextView tvEmail = new TextView(this);
+        tvEmail.setText("Email:");
+        EditText etEmail = new EditText(this);
+        etEmail.setHint("example@mail.com");
+        etEmail.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        // Поле для пароля
+        TextView tvPassword = new TextView(this);
+        tvPassword.setText("Пароль:");
+        EditText etPassword = new EditText(this);
+        etPassword.setHint("Пароль");
+        etPassword.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        // Поле для бригады
+        TextView tvBrigade = new TextView(this);
+        tvBrigade.setText("Бригада:");
+        EditText etBrigade = new EditText(this);
+        etBrigade.setHint("Бригада №1");
+
+        // Поле для должности
+        TextView tvPosition = new TextView(this);
+        tvPosition.setText("Должность:");
+        EditText etPosition = new EditText(this);
+        etPosition.setHint("Швея, мастер, кладовщик...");
+
+        // Добавляем все поля в layout
+        layout.addView(tvName);
+        layout.addView(etName);
+        layout.addView(tvEmail);
+        layout.addView(etEmail);
+        layout.addView(tvPassword);
+        layout.addView(etPassword);
+        layout.addView(tvBrigade);
+        layout.addView(etBrigade);
+        layout.addView(tvPosition);
+        layout.addView(etPosition);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Добавить", (dialog, which) -> {
+            String name = etName.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+            String brigade = etBrigade.getText().toString().trim();
+            String position = etPosition.getText().toString().trim();
+
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || position.isEmpty()) {
+                Toast.makeText(this, "Заполните все обязательные поля", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Регистрируем сотрудника
+            new Thread(() -> {
+                boolean success = databaseHelper.registerUser(email, password, name, brigade, position);
+                runOnUiThread(() -> {
+                    if (success) {
+                        Toast.makeText(this, "✅ Сотрудник успешно добавлен", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "❌ Ошибка добавления сотрудника", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }).start();
+        });
+
+        builder.setNegativeButton("Отмена", null);
+        builder.show();
+    }
+
+// === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
+
+    private String getOrderStatusText(String status) {
+        if (status == null) return "Новый";
+
+        switch (status) {
+            case "new": return "Новый";
+            case "in_progress": return "В работе";
+            case "completed": return "Выполнен";
+            case "cancelled": return "Отменен";
+            default: return status;
+        }
+    }
+
+    private String getRoleText(String role) {
+        if (role == null) return "Работник";
+
+        switch (role) {
+            case "worker": return "Работник";
+            case "master": return "Мастер";
+            case "storekeeper": return "Кладовщик";
+            case "manager": return "Менеджер";
+            default: return role;
+        }
+    }
+
+    private String getCurrentDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 
     // === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===

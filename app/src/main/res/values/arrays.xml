@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="roles_array">
+        <item>worker</item>
+        <item>master</item>
+        <item>storekeeper</item>
+        <item>manager</item>
+    </string-array>
+
+    <string-array name="brigades_array">
+        <item>Бригада №1</item>
+        <item>Бригада №2</item>
+        <item>Бригада №3</item>
+        <item>Бригада №4</item>
+        <item>Бригада №5</item>
+    </string-array>
+</resources>

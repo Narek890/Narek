@@ -722,6 +722,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return tasks;
     }
+    // В классе DatabaseHelper добавьте метод
+    public User getUserById(int userId) {
+        SQLiteDatabase db = getReadableDatabase();
+        User user = null;
+
+        try {
+            String query = "SELECT * FROM users WHERE id = ?";
+            Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+            if (cursor.moveToFirst()) {
+                user = new User(
+                        cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("email")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("role")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("brigade")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("position")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("avatar_url"))
+                );
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.e("DatabaseHelper", "❌ Ошибка получения пользователя по ID: " + e.getMessage());
+        }
+        return user;
+    }
     public boolean checkAssignmentQuality(int assignmentId, int checkerId, int approvedQuantity, int defectsFound, String notes) {
         SQLiteDatabase db = getWritableDatabase();
 
@@ -1554,6 +1580,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public String name;
         public String position;
         public int completed;
+        public String email;
+        public String role;
+        public String brigade;
 
         public Worker() {}
         public Worker(int id, String name, String position, int completed) {

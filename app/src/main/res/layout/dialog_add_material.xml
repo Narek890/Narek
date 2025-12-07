@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Название материала:"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etMaterialName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Например: Нитки #40, Пуговицы"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Единица измерения:"
+        android:textSize="14sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etMaterialUnit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="шт, кг, м, катушка"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Начальный запас:"
+        android:textSize="14sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etInitialStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="0 (если сейчас нет на складе)"
+        android:inputType="numberDecimal"
+        android:maxLines="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Минимальный запас:"
+        android:textSize="14sp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etMinStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="0 (если не установлен минимум)"
+        android:inputType="numberDecimal"
+        android:maxLines="1" />
+
+</LinearLayout>

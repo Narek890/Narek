@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выберите тип аналитики:"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnQualityStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Статистика качества"
+        android:backgroundTint="#FF9800"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnProductivityStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Производительность"
+        android:backgroundTint="#2196F3"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnFinancialStats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Финансовая аналитика"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

@@ -30,7 +30,14 @@
     <string name="status_checked">Проверено</string>
     <string name="status_in_progress">В работе</string>
     <string name="status_completed">Выполнено</string>
-
+    <string name="storekeeper_dashboard_title">Моя Смена - Кладовщик</string>
+    <string name="low_stock_title">НИЗКИЙ ЗАПАС</string>
+    <string name="recent_usage_title">ПОСЛЕДНИЕ СПИСАНИЯ</string>
+    <string name="warehouse_title">СКЛАД</string>
+    <string name="inventory_button">ИНВЕНТАРИЗАЦИЯ</string>
+    <string name="receive_materials_button">ПРИНЯТЬ МАТЕРИАЛЫ</string>
+    <string name="issue_materials_button">ВЫДАТЬ МАТЕРИАЛЫ</string>
+    <string name="logout_button">ВЫЙТИ</string>
     <!-- Сообщения -->
     <string name="msg_quality_approved">Качество одобрено в %s</string>
     <string name="msg_quality_rejected">Качество отклонено в %s</string>

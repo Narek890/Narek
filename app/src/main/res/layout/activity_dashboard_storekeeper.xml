@@ -125,7 +125,7 @@
                 android:id="@+id/tvRecentUsage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ткань х/б - 45.2 м\nНитки #40 - 3 кат.\nПуговицы - 120 шт\nМолния - 8 шт"
+                android:text="За неделю: нет данных об использовании"
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:lineSpacingExtra="4dp" />

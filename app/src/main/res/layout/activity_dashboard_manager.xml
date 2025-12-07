@@ -181,10 +181,10 @@
                 android:layout_marginBottom="8dp" />
 
             <Button
-                android:id="@+id/btnReports"
+                android:id="@+id/btnAnalytics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ОТЧЕТЫ И АНАЛИТИКА"
+                android:text="АНАЛИТИКА"
                 android:textSize="14sp"
                 android:backgroundTint="#FF9800"
                 android:textColor="@android:color/white"
@@ -202,5 +202,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
 </ScrollView>
